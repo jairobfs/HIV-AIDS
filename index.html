@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia Interativo sobre HIV: Transmissão e Prevenção</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Blue Accent -->
+    <!-- Application Structure Plan: A single-page application structured into thematic, scrollable sections accessed by a sticky top navigation. This design was chosen to allow users to either follow a logical learning path (from basics to specifics) or jump directly to the topic of their interest. The core sections are: 1) HIV Basics, 2) Transmission (clearly separating myths from facts), 3) Combined Prevention (using an interactive chart to show it's a multi-strategy approach), 4) Serological Window (using a timeline chart to visualize this complex concept), and 5) Testing/Treatment (reinforcing the U=U message). This structure breaks down a dense topic into manageable, interactive chunks, enhancing comprehension and user engagement. -->
+    <!-- Visualization & Content Choices: 1. Combined Prevention: Report Info -> Different methods of HIV prevention. Goal -> Organize/Inform. Viz -> Interactive Donut Chart. Interaction -> Clicking a segment displays detailed info. Justification -> Visually represents the concept of a multi-faceted strategy ("mandala de prevenção") and allows users to explore each component without being overwhelmed. Library -> Chart.js. 2. Serological Window: Report Info -> Biological process of seroconversion over time. Goal -> Explain Change. Viz -> Line chart showing viral load vs. antibody levels. Interaction -> Buttons for different time points update an explanation text and highlight the point on the chart. Justification -> A timeline is the most intuitive way to explain a time-dependent process, making the abstract concept of the "window" concrete and understandable. Library -> Chart.js. 3. Transmission: Report Info -> How HIV is and is not transmitted. Goal -> Inform/Clarify. Viz -> Two-column HTML/Tailwind layout with icons. Interaction -> Clear visual separation. Justification -> Directly addresses and debunks common myths, which is a primary goal for public health education. Method -> HTML/CSS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F7F4;
+            color: #333;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .timeline-chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+         @media (min-width: 768px) {
+            .timeline-chart-container {
+                height: 350px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #007B8A;
+            border-bottom-color: #007B8A;
+        }
+    </style>
+</head>
+<body class="bg-[#F8F7F4]">
+
+    <header class="bg-[#F8F7F4]/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <h1 class="text-xl md:text-2xl font-bold text-[#003C43]">Guia HIV</h1>
+                <div class="hidden md:flex md:space-x-8">
+                    <a href="#intro" class="nav-link text-gray-600 font-medium border-b-2 border-transparent pb-1">O que é HIV</a>
+                    <a href="#transmissao" class="nav-link text-gray-600 font-medium border-b-2 border-transparent pb-1">Transmissão</a>
+                    <a href="#prevencao" class="nav-link text-gray-600 font-medium border-b-2 border-transparent pb-1">Prevenção</a>
+                    <a href="#janela" class="nav-link text-gray-600 font-medium border-b-2 border-transparent pb-1">Janela Sorológica</a>
+                    <a href="#teste" class="nav-link text-gray-600 font-medium border-b-2 border-transparent pb-1">Teste e Tratamento</a>
+                </div>
+                 <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-gray-200 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-[#007B8A] focus:border-[#007B8A] block w-full p-2.5">
+                        <option value="#intro">O que é HIV</option>
+                        <option value="#transmissao">Transmissão</option>
+                        <option value="#prevencao">Prevenção</option>
+                        <option value="#janela">Janela Sorológica</option>
+                        <option value="#teste">Teste e Tratamento</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="intro" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#003C43] mb-4">Compreendendo o HIV e a AIDS</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                Esta seção introdutória esclarece a diferença fundamental entre o HIV, o vírus, e a AIDS, a doença que pode se desenvolver se o vírus não for tratado. Entender essa distinção é o primeiro passo para o conhecimento e a prevenção.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <h3 class="text-2xl font-bold text-[#135D66] mb-3">HIV: O Vírus</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        HIV é a sigla para Vírus da Imunodeficiência Humana. É um retrovírus que ataca o sistema imunológico, especificamente as células T CD4, que são cruciais para combater infecções. Sem tratamento, o vírus se replica e enfraquece progressivamente as defesas do corpo.
+                    </p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200">
+                    <h3 class="text-2xl font-bold text-[#135D66] mb-3">AIDS: A Doença</h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        AIDS é a sigla para Síndrome da Imunodeficiência Adquirida. É o estágio mais avançado da infecção pelo HIV. Ocorre quando o sistema imunológico está tão danificado que a pessoa fica vulnerável a infecções oportunistas e certos tipos de câncer. É importante frisar: ter HIV não significa ter AIDS. Com o tratamento antirretroviral (TARV), a maioria das pessoas com HIV nunca desenvolverá AIDS.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="transmissao" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#003C43] mb-4">Formas de Contágio: Mitos e Fatos</h2>
+             <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-12">
+                Saber como o HIV é transmitido é fundamental para a prevenção e para combater o estigma. Esta seção separa claramente as formas reais de transmissão dos mitos comuns, ajudando a focar nas práticas seguras e a eliminar medos infundados.
+            </p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+                    <h3 class="text-2xl font-bold text-green-800 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">✔️</span> Como o HIV é transmitido
+                    </h3>
+                    <ul class="space-y-3 text-green-700">
+                        <li class="flex items-start"><strong class="font-semibold mr-2 w-40">Sexo desprotegido:</strong> Anal, vaginal ou oral sem o uso de preservativo com uma pessoa que vive com HIV e não está em tratamento.</li>
+                        <li class="flex items-start"><strong class="font-semibold mr-2 w-40">Compartilhamento de materiais:</strong> Seringas, agulhas e outros materiais para uso de drogas injetáveis.</li>
+                        <li class="flex items-start"><strong class="font-semibold mr-2 w-40">De mãe para filho:</strong> Durante a gravidez, parto ou amamentação, se a mãe não estiver em tratamento.</li>
+                         <li class="flex items-start"><strong class="font-semibold mr-2 w-40">Instrumentos não esterilizados:</strong> Uso de instrumentos perfurocortantes não esterilizados.</li>
+                    </ul>
+                </div>
+
+                <div class="bg-red-50 border-2 border-red-200 rounded-xl p-6">
+                    <h3 class="text-2xl font-bold text-red-800 mb-4 flex items-center">
+                        <span class="text-3xl mr-3">❌</span> Como o HIV NÃO é transmitido
+                    </h3>
+                    <ul class="space-y-3 text-red-700">
+                        <li>Beijo, abraço, aperto de mão ou carinho.</li>
+                        <li>Suor, lágrima ou saliva.</li>
+                        <li>Compartilhamento de talheres, copos ou pratos.</li>
+                        <li>Uso do mesmo banheiro, piscina ou assentos de transporte público.</li>
+                        <li>Picada de inseto.</li>
+                        <li>Doação de sangue (o material é descartável).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="prevencao" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#003C43] mb-4">Prevenção Combinada</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                A prevenção do HIV é mais eficaz quando várias estratégias são usadas em conjunto. A "Prevenção Combinada" une diferentes métodos para se adaptar às necessidades e contextos de cada pessoa. Explore o gráfico interativo abaixo para conhecer as principais ferramentas disponíveis.
+            </p>
+            <div class="grid lg:grid-cols-2 gap-8 items-center">
+                <div class="chart-container">
+                    <canvas id="preventionChart"></canvas>
+                </div>
+                <div id="prevention-info" class="bg-white p-6 rounded-xl shadow-md border border-gray-200 min-h-[300px] flex flex-col justify-center">
+                    <h3 id="info-title" class="text-2xl font-bold text-[#135D66] mb-3">Clique em uma seção do gráfico</h3>
+                    <p id="info-text" class="text-gray-700 leading-relaxed">Selecione um método de prevenção para ver sua descrição detalhada aqui.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="janela" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#003C43] mb-4">A Janela Sorológica</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                Após a infecção pelo HIV, existe um período em que os exames podem não detectar o vírus. Este período é chamado de "janela sorológica". Use os botões para navegar pela linha do tempo e entender como os níveis de vírus e anticorpos mudam, e por que é importante esperar o tempo certo para fazer o teste.
+            </p>
+            <div class="timeline-chart-container">
+                 <canvas id="windowChart"></canvas>
+            </div>
+            <div class="flex justify-center flex-wrap gap-2 my-4">
+                <button onclick="updateWindowChart(0)" class="timeline-btn bg-[#007B8A] text-white py-2 px-4 rounded-lg shadow-md hover:bg-[#005f6b] transition duration-300">Exposição</button>
+                <button onclick="updateWindowChart(1)" class="timeline-btn bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300">2 Semanas</button>
+                <button onclick="updateWindowChart(2)" class="timeline-btn bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300">4 Semanas</button>
+                <button onclick="updateWindowChart(3)" class="timeline-btn bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300">12 Semanas</button>
+            </div>
+             <div id="window-info" class="bg-white p-6 rounded-xl shadow-md border border-gray-200 mt-6 max-w-3xl mx-auto">
+                <h3 id="window-info-title" class="text-xl font-bold text-[#135D66] mb-2">Ponto de Exposição</h3>
+                <p id="window-info-text" class="text-gray-700">Este é o momento inicial do contato com o vírus. A carga viral (quantidade de vírus no sangue) começa a aumentar rapidamente, mas os anticorpos ainda não foram produzidos. Os testes que buscam anticorpos darão resultado negativo.</p>
+            </div>
+        </section>
+        
+        <section id="teste" class="scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-[#003C43] mb-4">Teste e Tratamento: O Poder do Conhecimento</h2>
+            <p class="text-lg text-center text-gray-600 max-w-3xl mx-auto mb-8">
+                Fazer o teste de HIV é a única maneira de saber seu status sorológico. O diagnóstico precoce é crucial para iniciar o tratamento, que permite uma vida longa e saudável e também é uma forma de prevenção, conforme explicado pelo conceito I=I.
+            </p>
+             <div class="bg-[#E3FEF7] border-2 border-[#77B0AA] rounded-xl p-8 text-center max-w-2xl mx-auto shadow-lg">
+                <h3 class="text-2xl md:text-3xl font-bold text-[#003C43] mb-3">Indetectável = Intransmissível (I=I)</h3>
+                <p class="text-lg text-[#135D66] leading-relaxed">
+                    Pessoas que vivem com HIV e seguem o tratamento antirretroviral (TARV) corretamente podem atingir uma carga viral "indetectável". Isso significa que a quantidade de vírus no sangue é tão baixa que não pode ser transmitida para outras pessoas por via sexual. Além de proteger a saúde do indivíduo, o tratamento é uma poderosa ferramenta de prevenção.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center">
+            <p class="text-sm">Esta é uma ferramenta educacional. As informações não substituem a consulta médica.</p>
+            <p class="text-xs text-gray-400 mt-2">Fontes de referência: Organização Mundial da Saúde (OMS), UNAIDS, Ministério da Saúde do Brasil.</p>
+        </div>
+    </footer>
+    
+    <script>
+        const preventionData = {
+            labels: ['Preservativos', 'Testagem Regular', 'PrEP', 'PEP', 'Tratamento (I=I)'],
+            datasets: [{
+                data: [1, 1, 1, 1, 1],
+                backgroundColor: ['#007B8A', '#135D66', '#77B0AA', '#A3D2CA', '#E3FEF7'],
+                borderColor: '#F8F7F4',
+                borderWidth: 3,
+                hoverBackgroundColor: ['#005f6b', '#0d4a52', '#5a8e88', '#86c2b8', '#c2f3e5']
+            }]
+        };
+
+        const preventionInfoContent = {
+            'Preservativos': {
+                title: 'Preservativos (Camisinha)',
+                text: 'O uso correto e consistente de preservativos masculinos ou femininos é um dos métodos mais eficazes para prevenir a transmissão do HIV e outras Infecções Sexualmente Transmissíveis (ISTs).'
+            },
+            'Testagem Regular': {
+                title: 'Testagem Regular',
+                text: 'Realizar o teste de HIV regularmente é fundamental para saber seu status sorológico. O diagnóstico precoce permite o início do tratamento, melhorando a qualidade de vida e interrompendo a cadeia de transmissão.'
+            },
+            'PrEP': {
+                title: 'PrEP (Profilaxia Pré-Exposição)',
+                text: 'A PrEP consiste no uso diário de um medicamento antirretroviral por pessoas que não têm HIV, mas estão em alto risco de infecção. Quando tomado corretamente, reduz o risco de contrair o HIV por via sexual em mais de 99%.'
+            },
+            'PEP': {
+                title: 'PEP (Profilaxia Pós-Exposição)',
+                text: 'A PEP é uma medida de urgência que consiste no uso de medicamentos antirretrovirais por 28 dias para reduzir o risco de infecção após uma possível exposição ao HIV. Deve ser iniciada o mais rápido possível, preferencialmente nas primeiras 2 horas e no máximo em 72 horas.'
+            },
+            'Tratamento (I=I)': {
+                title: 'Tratamento como Prevenção (I=I)',
+                text: 'Pessoas com HIV que fazem o tratamento adequadamente atingem a carga viral indetectável. Isso significa que a quantidade de vírus no sangue é tão baixa que não o transmitem por via sexual. Indetectável = Intransmissível.'
+            }
+        };
+
+        const infoTitle = document.getElementById('info-title');
+        const infoText = document.getElementById('info-text');
+
+        const preventionChartCtx = document.getElementById('preventionChart').getContext('2d');
+        const preventionChart = new Chart(preventionChartCtx, {
+            type: 'doughnut',
+            data: preventionData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                         labels: {
+                            color: '#333',
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label;
+                            }
+                        }
+                    }
+                },
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const label = preventionData.labels[index];
+                        const content = preventionInfoContent[label];
+                        infoTitle.textContent = content.title;
+                        infoText.textContent = content.text;
+                    }
+                }
+            }
+        });
+
+        const windowChartLabels = ['Exposição', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
+        const windowChartData = {
+            labels: windowChartLabels.map(l => `${l} sem`),
+            datasets: [{
+                label: 'Carga Viral (RNA do HIV)',
+                data: [0, 5, 8, 10, 9, 7, 6, 5, 4.5, 4, 3.8, 3.7, 3.6],
+                borderColor: '#E53E3E',
+                backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                fill: true,
+                tension: 0.4,
+                yAxisID: 'y'
+            }, {
+                label: 'Anticorpos (Anti-HIV)',
+                data: [0, 0, 0, 1, 3, 5, 7, 8, 9, 9.5, 9.8, 10, 10],
+                borderColor: '#3182CE',
+                backgroundColor: 'rgba(49, 130, 206, 0.1)',
+                fill: true,
+                tension: 0.4,
+                yAxisID: 'y1'
+            }]
+        };
+        
+        const windowInfo = {
+            0: { title: "Ponto de Exposição", text: "Este é o momento inicial do contato com o vírus. A carga viral (quantidade de vírus no sangue) começa a aumentar rapidamente, mas os anticorpos ainda não foram produzidos. Os testes que buscam anticorpos darão resultado negativo." },
+            1: { title: "2 Semanas Após Exposição", text: "A carga viral está muito alta. A pessoa está altamente infecciosa. A maioria dos testes de anticorpos ainda pode ser negativa, mas testes mais sensíveis (de 4ª geração ou NAT) já podem detectar o vírus. É o pico da infecção aguda." },
+            2: { title: "4 Semanas Após Exposição", text: "O corpo começa a produzir anticorpos detectáveis. A janela sorológica para a maioria dos testes de 3ª e 4ª geração termina aqui. A carga viral começa a diminuir à medida que o sistema imunológico responde." },
+            3: { title: "12 Semanas Após Exposição", text: "Praticamente todos os tipos de teste de HIV podem detectar a infecção com alta precisão. Os níveis de anticorpos estão altos e a carga viral se estabiliza em um nível mais baixo (set point viral)." }
+        };
+        
+        const windowInfoTitleEl = document.getElementById('window-info-title');
+        const windowInfoTextEl = document.getElementById('window-info-text');
+        
+        let windowChart;
+        let verticalLinePlugin;
+        
+        function drawVerticalLine(chart, pointIndex) {
+            const ctx = chart.ctx;
+            const meta = chart.getDatasetMeta(0);
+            const point = meta.data[pointIndex];
+            
+            if (point) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(point.x, chart.chartArea.top);
+                ctx.lineTo(point.x, chart.chartArea.bottom);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'rgba(0, 60, 67, 0.5)';
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+        
+        const timePoints = [0, 2, 4, 12];
+        
+        function updateWindowChart(stageIndex) {
+            const pointIndex = timePoints[stageIndex];
+            
+            windowInfoTitleEl.textContent = windowInfo[stageIndex].title;
+            windowInfoTextEl.textContent = windowInfo[stage-Index].text;
+            
+            if (windowChart) {
+                windowChart.options.plugins.verticalLine.pointIndex = pointIndex;
+                windowChart.update();
+            }
+            
+            const buttons = document.querySelectorAll('.timeline-btn');
+            buttons.forEach((btn, index) => {
+                if (index === stageIndex) {
+                    btn.classList.remove('bg-gray-300', 'text-gray-800');
+                    btn.classList.add('bg-[#007B8A]', 'text-white');
+                } else {
+                    btn.classList.remove('bg-[#007B8A]', 'text-white');
+                    btn.classList.add('bg-gray-300', 'text-gray-800');
+                }
+            });
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const windowChartCtx = document.getElementById('windowChart').getContext('2d');
+            
+            verticalLinePlugin = {
+                id: 'verticalLine',
+                afterDraw: (chart) => {
+                    if (chart.options.plugins.verticalLine && chart.options.plugins.verticalLine.pointIndex !== undefined) {
+                        drawVerticalLine(chart, chart.options.plugins.verticalLine.pointIndex);
+                    }
+                }
+            };
+            
+            Chart.register(verticalLinePlugin);
+            
+            windowChart = new Chart(windowChartCtx, {
+                type: 'line',
+                data: windowChartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'bottom' },
+                        tooltip: { mode: 'index', intersect: false },
+                        verticalLine: { pointIndex: 0 }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Semanas após exposição' } },
+                        y: { position: 'left', title: { display: true, text: 'Nível (Relativo)', color: '#E53E3E' } },
+                        y1: { position: 'right', title: { display: true, text: 'Nível (Relativo)', color: '#3182CE' }, grid: { drawOnChartArea: false } }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
+                     elements: {
+                        point: {
+                            radius: (context) => {
+                                return context.dataIndex === context.chart.options.plugins.verticalLine.pointIndex ? 6 : 3;
+                            },
+                             backgroundColor: (context) => {
+                                return context.dataIndex === context.chart.options.plugins.verticalLine.pointIndex ? '#003C43' : context.dataset.borderColor;
+                            }
+                        }
+                    }
+                }
+            });
+
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 80) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+                if(current){
+                  mobileNav.value = `#${current}`;
+                }
+            });
+
+            mobileNav.addEventListener('change', (e) => {
+                window.location.hash = e.target.value;
+            });
+        });
+    </script>
+</body>
+</html>
